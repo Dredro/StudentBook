@@ -11,8 +11,8 @@ const setupSwagger = require('./swagger');
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
-
-mongoose.connect('mongodb://localhost:27017/socialApp', { useNewUrlParser: true, useUnifiedTopology: true })
+var monogourl = process.env.MONGO_URI || 'mongodb://localhost:27017/socialApp';
+mongoose.connect(monogourl, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error(err));
 
@@ -24,4 +24,4 @@ app.use('/api/comments', commentRoutes);
 setupSwagger(app);
 
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log("Server running on http://localhost:${PORT}"));
