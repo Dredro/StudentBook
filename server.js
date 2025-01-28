@@ -205,6 +205,25 @@ app.put("/api/posts/:postId", authMiddleware, (req, res) => {
         likesCount: post.likes.length
     })
 })
+app.delete("/api/posts/:postId", authMiddleware, (req, res) => {
+    const userId = req.user.userId;
+    const { postId } = req.params;
+    const postIndex = posts.findIndex((p) => p.id == postId);
+
+    if (postIndex === -1) {
+        return res.status(404).json({ error: "Post nie znaleziony" });
+    }
+
+    const post = posts[postIndex];
+
+    if (post.authorId !== userId) {
+        return res.status(403).json({ error: "Nie masz uprawnień do usunięcia tego posta" });
+    }
+
+    posts.splice(postIndex, 1);
+
+    return res.json({ message: "Post został pomyślnie usunięty" });
+});
 
 const PORT = 4000
 app.listen(PORT, () => {
